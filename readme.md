@@ -1,7 +1,7 @@
 # SweetShell, multi-funcional terminal tools for Mac OS!
 
-Currently Developing by Zhouzhou
+Currently Developing by Zhouzhou.
 
-## Introduction
+## Log
 
-remain
+- Mar 2025: Starts working on this project. Implements the core logic. Await for the support of JSON parsing.
