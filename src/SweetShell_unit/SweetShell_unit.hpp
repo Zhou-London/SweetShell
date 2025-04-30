@@ -3,7 +3,7 @@
 #include <vector>
 #include "TerminalInstance/TerminalInstance.hpp"
 
-class SweetShell_unit {
+class swsh_unit {
 private:
     std::vector<TerminalInstance> terminals;
     int window_counter = 0;
@@ -13,8 +13,8 @@ private:
     void end_terminal(pid_t pid);
 
 public:
-    SweetShell_unit() {};
-    ~SweetShell_unit();
+    swsh_unit() {};
+    ~swsh_unit();
 
     pid_t execute(std::string command);
 

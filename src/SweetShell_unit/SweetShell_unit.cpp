@@ -9,7 +9,7 @@
 
 #include "TerminalInstance/TerminalInstance.hpp"
 
-std::string SweetShell_unit::generate_window_id(){
+std::string swsh_unit::generate_window_id(){
     window_counter++;
     std::time_t now = std::time(nullptr);
     pid_t pid = getpid();
@@ -27,7 +27,7 @@ std::string SweetShell_unit::generate_window_id(){
     return ss.str();
 };
 
-pid_t SweetShell_unit::process_script(std::string command){
+pid_t swsh_unit::process_script(std::string command){
 
     // "command" is to be acted in a new terminal page
     // "window_id" is to be used to track this new terminal page
@@ -68,7 +68,7 @@ pid_t SweetShell_unit::process_script(std::string command){
     return -1;
 }
 
-void SweetShell_unit::end_terminal(pid_t pid){
+void swsh_unit::end_terminal(pid_t pid){
     if(pid <= 0) return;
 
     auto it = std::find_if(terminals.begin(), terminals.end(), 
@@ -91,22 +91,22 @@ void SweetShell_unit::end_terminal(pid_t pid){
     terminals.erase(it);
 }
 
-pid_t SweetShell_unit::execute(std::string command) { return process_script(command); }
+pid_t swsh_unit::execute(std::string command) { return process_script(command); }
 
-void SweetShell_unit::close(pid_t pid){ end_terminal(pid); }
+void swsh_unit::close(pid_t pid){ end_terminal(pid); }
 
-void SweetShell_unit::close_all() {
+void swsh_unit::close_all() {
     while (!terminals.empty()) { end_terminal(terminals.back().pid); }
 }
 
-std::vector<pid_t> SweetShell_unit::get_pids() const {
+std::vector<pid_t> swsh_unit::get_pids() const {
     std::vector<pid_t> pids;
     for (const auto& t : terminals) { pids.push_back(t.pid); }
     return pids;
 }
 
-bool SweetShell_unit::has_running_terminals() const {
+bool swsh_unit::has_running_terminals() const {
     return !terminals.empty();
 }
 
-SweetShell_unit::~SweetShell_unit(){ close_all(); }
+swsh_unit::~swsh_unit(){ close_all(); }
