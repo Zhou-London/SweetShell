@@ -10,7 +10,7 @@
 swsh_database::swsh_database() : db("swsh_database.db", 
                                 SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE)
 {
-    std::cout<<"Database connected."<<std::endl;
+    //std::cout<<"Database connected."<<std::endl;
 }
 
 void swsh_database::init_helper(){

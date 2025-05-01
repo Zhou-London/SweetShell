@@ -20,6 +20,11 @@ add_executable(swsh
     src/Preset/Preset.cpp
     src/Preset/Preset.hpp
     src/Project_data/Project_data.hpp
+    src/SweetShell_UI/swsh_ui.cpp
+    src/SweetShell_UI/swsh_ui.hpp
+    src/SweetShell_UI/Button.cpp
+    src/SweetShell_UI/Button.hpp
+    src/Signal/Signal.hpp
 )
 
 target_include_directories(swsh PRIVATE 

@@ -91,18 +91,34 @@ void swsh_unit::end_terminal(pid_t pid){
     terminals.erase(it);
 }
 
-pid_t swsh_unit::execute(std::string command) { return process_script(command); }
+pid_t swsh_unit::execute(Command command) { 
 
-void swsh_unit::close(pid_t pid){ end_terminal(pid); }
+    return process_script(command.command); 
 
-void swsh_unit::close_all() {
-    while (!terminals.empty()) { end_terminal(terminals.back().pid); }
 }
 
-std::vector<pid_t> swsh_unit::get_pids() const {
+void swsh_unit::set_preset(const Preset* preset){
+    if(this->preset || has_running_terminals()){
+        close_all();
+        terminals = {};
+        this->preset = nullptr;
+    }
+    this->preset = preset;
+}
+
+
+std::vector<pid_t> swsh_unit::execute_preset(){
     std::vector<pid_t> pids;
-    for (const auto& t : terminals) { pids.push_back(t.pid); }
+    for (const Command& cmd: preset->commands){
+        pids.push_back(execute(cmd));
+    }
+
     return pids;
+}
+
+void swsh_unit::close_all() {
+    if(!has_running_terminals()) return;
+    while (has_running_terminals()) end_terminal(terminals.back().pid);
 }
 
 bool swsh_unit::has_running_terminals() const {

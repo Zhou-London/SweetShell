@@ -28,6 +28,8 @@ class Preset{
 public:
     std::vector<Command> commands;
     std::string project_name;
+
+    Preset() = default;
     Preset(const std::string& name): project_name(name){};
     ~Preset() = default;
 
