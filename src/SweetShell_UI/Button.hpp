@@ -4,6 +4,7 @@
 #include <termcolor.hpp>
 #include "Signal/Signal.hpp"
 #include "SweetShell_unit/SweetShell_unit.hpp"
+#include "SweetShell_database/SweetShell_database.hpp"
 
 // * Abstract Button
 
@@ -78,6 +79,20 @@ public:
         su.close_all();
     };
     Signal onClick() override;
+};
+
+// * Delete Preset Button
+class DeletePresetButton : public Button{
+private:
+    int id;
+public:
+    DeletePresetButton(const std::string& lbl,
+                       const int& n):
+                       Button(lbl),
+                       id(n)
+                       {}
+    Signal onClick() override;
+
 };
 
 // * Exit Project Info Button

@@ -22,6 +22,7 @@ public:
     std::vector<Project_data> iterate_projects();
     std::optional<Preset> loadPresetById(long long project_id);
     std::optional<Preset> loadPreset(const Project_data& project);
+    void deletePresetById(long long project_id);
 
     
 };

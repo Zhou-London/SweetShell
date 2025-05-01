@@ -1,6 +1,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <termcolor.hpp>
+#include <ios>
+#include <limits>
 
 #include "Util/safe_access.hpp"
 #include "TerminalInstance/TerminalInstance.hpp"
@@ -23,7 +25,9 @@ int main(){
     // ? 1001 -> Projects Scene (Dynamic Scene)
     // ? 1002 -> Projects Infomation Scene (Dynamic Scene)
     // ? 10020 -> Projects Information Scene Exit
+    // ? 1003 -> Create New Project
     Signal signal;
+    signal.code = 0;
 
 
     // * Root Scene
@@ -64,8 +68,10 @@ int main(){
     root_scene.static_texts.push_back("");
     root_scene.static_texts.push_back("");
     root_scene.menuOptions.push_back(std::make_unique<ProjsButton>("Projects"));
-    root_scene.menuOptions.push_back(std::make_unique<TestButton>("Create New Project", 123));
+    root_scene.menuOptions.push_back(std::make_unique<BackButton>("Create New Project", 1003));
     root_scene.menuOptions.push_back(std::make_unique<QuitButton>("Quit"));
+
+    swsh_database sd;
 
     while(true){
         // Quit
@@ -80,14 +86,17 @@ int main(){
             swsh_ui projects_scene;
             projects_scene.static_texts = {"----Your Projects List----"};
 
-
-            swsh_database sd;
             std::vector<Project_data> projects = sd.iterate_projects();
-            for(Project_data proj: projects){
-                projects_scene.menuOptions.push_back(std::make_unique<ProjsInfoButton>(
-                    proj.name, 
-                    proj
-                ));
+            if(projects.empty()){
+                projects_scene.static_texts.push_back("There are no project yet.");
+
+            } else{
+                for(Project_data proj: projects){
+                    projects_scene.menuOptions.push_back(std::make_unique<ProjsInfoButton>(
+                        proj.name, 
+                        proj
+                    ));
+                }
             }
 
             projects_scene.menuOptions.push_back(std::make_unique<BackButton>(
@@ -123,21 +132,100 @@ int main(){
                         &preset.value()
                     ));
 
+                    project_info_scene.menuOptions.push_back(std::make_unique<DeletePresetButton>(
+                        "Delete This Project",
+                        signal.project_data.id
+                    ));
+
                     project_info_scene.menuOptions.push_back(std::make_unique<ExitInfoButton>(
                         "<< Back"
                     ));
 
-                    while(signal.code != 10020){
+                    while(signal.code != 10020 && signal.code != 1001){
                         signal = project_info_scene.run();
                     }
 
                     signal.code = 1001;
                 }
+            }
                 
+
+        }
+        // Create New Project
+        if(signal.code == 1003){
+
+            std::cout << termcolor::bold
+            << "----Create New Project----"
+            << termcolor::reset
+            << std::endl
+            << std::endl;
+
+            Preset new_preset;
+            std::string proj_name;
+            
+            std::cout << termcolor::bold << termcolor::color<170>
+            << "What's the name of your project?"
+            << std::endl
+            << "> "
+            << termcolor::reset;
+            
+            std::getline(std::cin, proj_name);
+            new_preset.project_name = proj_name;
+
+            int count = 1;
+
+            while(true){
+
+                std::cout << termcolor::bold << termcolor::color<170>
+                << "Enter your " << count << " command."
+                << " (Enter q to quit)"
+                << std::endl
+                << "> "
+                << termcolor::reset;
+
+                std::string cmd;
+                std::getline(std::cin, cmd);
+
+                if(cmd == "q" || cmd == "Q"){
+                    if(count > 1){
+                        sd.save_preset(new_preset);
+                    }
+                    signal.code = 0;
+                    break;
+
+                }
+
+                count++;
+
+                std::cout << termcolor::bold << termcolor::color<170>
+                << "Enter its name."
+                << std::endl
+                << "> "
+                << termcolor::reset;
+
+                std::string cmd_name;
+                std::getline(std::cin, cmd_name);
+
+                std::cout << termcolor::bold << termcolor::color<170>
+                << "Enter its description."
+                << " (Optional)"
+                << std::endl
+                << "> "
+                << termcolor::reset;
+
+                std::string cmd_description;
+                std::getline(std::cin, cmd_description);
+
+                Command new_cmd(cmd, cmd_name);
+                cmd_description.empty() ? 
+                new_cmd.description = "" : new_cmd.description = cmd_description;
+
+                new_preset.add(new_cmd);
 
             }
         }
     }
+    system(CLEAR_SCREEN);
 
     return 0;
 

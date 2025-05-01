@@ -64,6 +64,15 @@ Signal RunPresetButton::onClick(){
     return s;
 }
 
+// * Delete Preset Button
+Signal DeletePresetButton::onClick(){
+    Signal s;
+    swsh_database sd;
+    sd.deletePresetById(id);
+    s.code = 1001;
+    return s;
+}
+
 // * Exit Info Button
 Signal ExitInfoButton::onClick(){
     Signal s;

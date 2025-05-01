@@ -235,3 +235,24 @@ std::optional<Preset> swsh_database::loadPreset(const Project_data& project){
         return std::nullopt;
     }
 } 
+
+void swsh_database::deletePresetById(long long id){
+    try{
+        SQLite::Transaction transaction(this->db);
+
+        SQLite::Statement delete_commands(this->db, 
+        "DELETE FROM commands WHERE project_id = ?");
+        delete_commands.bind(1, id);
+        delete_commands.exec();
+
+        SQLite::Statement delete_project(this->db,
+        "DELETE FROM projects WHERE id = ?");
+        delete_project.bind(1, id);
+        delete_project.exec();
+
+        transaction.commit();
+    } catch (const SQLite::Exception& e){
+        std::cerr << "Error" << std::endl;
+    }
+
+}
